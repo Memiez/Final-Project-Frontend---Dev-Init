@@ -1,3 +1,18 @@
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+
+export default {
+    data () {
+      return {
+        drawer: true,
+        rail: true,
+      }
+    },
+  }
+
+</script>
+
 <template>
   <v-card>
     <v-layout>
@@ -9,7 +24,7 @@
       >
         <v-list-item
           prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-          title="John Leider 5525"
+          title="Lisa"
           nav
         >
           <template v-slot:append>
@@ -29,22 +44,12 @@
           <v-list-item prepend-icon="mdi-account-group-outline" title="Users" value="users"></v-list-item>
         </v-list>
       </v-navigation-drawer>
-      <v-main style="height: 250px"></v-main>
+      <v-app-bar title="Application bar"></v-app-bar>
+      <v-main class="d-flex align-center justify-center" style="min-height: 300px;">
+      Main Content
+    </v-main>
     </v-layout>
   </v-card>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
 
-
-export default {
-    data () {
-      return {
-        drawer: true,
-        rail: true,
-      }
-    },
-  }
-
-</script>
