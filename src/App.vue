@@ -3,36 +3,23 @@ import { defineComponent } from 'vue'
 
 
 export default {
-    data () {
-      return {
-        drawer: true,
-        rail: true,
-      }
-    },
-  }
+  data() {
+    return {
+      drawer: true,
+      rail: true,
+    }
+  },
+}
 
 </script>
 
 <template>
   <v-card>
     <v-layout>
-      <v-navigation-drawer
-        v-model="drawer"
-        :rail="rail"
-        permanent
-        @click="rail = false"
-      >
-        <v-list-item
-          prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-          title="Lisa"
-          nav
-        >
+      <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false">
+        <v-list-item prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg" title="Lisa" nav>
           <template v-slot:append>
-            <v-btn
-              variant="text"
-              icon="mdi-chevron-left"
-              @click.stop="rail = !rail"
-            ></v-btn>
+            <v-btn variant="text" icon="mdi-chevron-left" @click.stop="rail = !rail"></v-btn>
           </template>
         </v-list-item>
 
@@ -46,8 +33,58 @@ export default {
       </v-navigation-drawer>
       <v-app-bar title="Application bar"></v-app-bar>
       <v-main class="d-flex align-center justify-center" style="min-height: 300px;">
-      Main Content
-    </v-main>
+        <v-container class="bg-light-blue">
+          <v-row no-gutters>
+            <v-col>
+              <v-sheet class="pa-2 ma-2">
+                <!-- col 1 -->
+                <v-container>
+                  <v-row justify="space-around">
+                    <v-date-picker elevation="24"></v-date-picker>
+                  </v-row>
+                </v-container>
+              </v-sheet>
+            </v-col>
+            <v-col>
+              <v-sheet class="pa-2 ma-2">
+                .v-col-auto
+              </v-sheet>
+            </v-col>
+          </v-row>
+
+          <v-row no-gutters>
+            <v-col>
+              <v-sheet class="pa-2 ma-2">
+                .v-col-auto
+              </v-sheet>
+            </v-col>
+            <v-col>
+              <v-sheet class="pa-2 ma-2">
+                .v-col-auto
+              </v-sheet>
+            </v-col>
+            <v-col>
+              <v-sheet class="pa-2 ma-2">
+                .v-col-auto
+              </v-sheet>
+            </v-col>
+          </v-row>
+
+          <v-row no-gutters>
+            <v-col cols="2">
+              <v-sheet class="pa-2 ma-2">
+                .v-col-2
+              </v-sheet>
+            </v-col>
+            <v-col>
+              <v-sheet class="pa-2 ma-2">
+                .v-col-auto
+              </v-sheet>
+            </v-col>
+          </v-row>
+        </v-container>
+
+      </v-main>
     </v-layout>
   </v-card>
 </template>
