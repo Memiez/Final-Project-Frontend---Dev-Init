@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import vuetify from './plugins/vuetify'
 
 
 export default {
@@ -35,7 +36,7 @@ export default {
       <v-main class="d-flex align-center justify-center" style="min-height: 300px;">
         <v-container class="bg-light-blue">
           <v-row no-gutters>
-            <v-col>
+            <v-col cols="auto">
               <v-sheet class="pa-2 ma-2">
                 <!-- col 1 -->
                 <v-container>
@@ -48,6 +49,7 @@ export default {
             <v-col>
               <v-sheet class="pa-2 ma-2">
                 .v-col-auto
+                
               </v-sheet>
             </v-col>
           </v-row>
