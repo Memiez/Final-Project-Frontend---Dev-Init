@@ -1,9 +1,16 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import vuetify from './plugins/vuetify'
-
+import TodoApp from './components/TodoApp.vue'
 
 export default {
+  name: "App",
+
+  components: {
+    TodoApp
+  },
+
+
   data() {
     return {
       drawer: true,
@@ -49,7 +56,14 @@ export default {
             <v-col>
               <v-sheet class="pa-2 ma-2">
                 .v-col-auto
-                
+                <v-app>
+                  <!-- ส่วนอื่นๆ ของเทมเพลต -->
+                  <v-card>
+                    <!-- เพิ่ม TodoApp.vue ที่นี่ -->
+                    <todo-app></todo-app>
+                  </v-card>
+                  <!-- ส่วนอื่นๆ ของเทมเพลต -->
+                </v-app>
               </v-sheet>
             </v-col>
           </v-row>
