@@ -10,6 +10,7 @@ export const useTodoListStore = defineStore("todoList", {
   state: () => ({
     todoList: [] as ToDoItem[],
     id: 0,
+    showAlert: false,
   }),
   actions: {
     addTodo(item: string) {
@@ -25,6 +26,12 @@ export const useTodoListStore = defineStore("todoList", {
       if (todo) {
         todo.completed = !todo.completed;
       }
+    },
+    inputAlert() {
+      this.showAlert = true;
+      setTimeout(() => {
+        this.showAlert = false;
+      }, 1000);
     },
   },
 });
