@@ -10,29 +10,25 @@
         </form>
     </div>
 </template>
-  
-<script lang="ts">
-import { ref, defineComponent } from "vue";
-import { useTodoListStore } from "../store/useTodoListStore";
-export default defineComponent({
-    setup() {
-        const todo = ref("");
-        const store = useTodoListStore();
+<script lang="ts" setup>
+import { useTodoListStore } from "@/stores/useTodoListStore";
+import { ref } from "vue";
 
-        function addItemAndClear(item: string) {
-            if (item.length === 0) {
-                store.inputAlert();
-                return;
-            }
-            store.addTodo(item);
-            todo.value = "";
-        }
 
-        return { todo, addItemAndClear, store };
-    },
-});
+const todo = ref("");
+const store = useTodoListStore();
+
+function addItemAndClear(item: string) {
+    if (item.length === 0) {
+        store.inputAlert();
+        return;
+    }
+    store.addTodo(item);
+    todo.value = "";
+}
+
+
 </script>
-  
 <style scoped>
 form {
     margin-bottom: 15px;

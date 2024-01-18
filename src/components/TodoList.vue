@@ -1,29 +1,25 @@
 <template>
-    <div v-for="todo in todoList" :key="todo.id" class="list">
+    <div v-for="todo in todoStore.todoList" :key="todo.id" class="list">
         <div class="item">
             <span :class="{ completed: todo.completed }">{{ todo.item }}</span>
             <div>
-                <span @click.stop="toggleCompleted(todo.id)">&#10004;</span>
-                <span @click="deleteTodo(todo.id)" class="x">&#10060;</span>
+                <span @click.stop="todoStore.toggleCompleted(todo.id)">&#10004;</span>
+                <span @click="todoStore.deleteTodo(todo.id)" class="x">&#10060;</span>
             </div>
         </div>
     </div>
 </template>
   
-<script lang="ts">
-import { defineComponent } from "vue";
-import { useTodoListStore } from "../store/useTodoListStore";
-import { storeToRefs } from "pinia";
-export default defineComponent({
-    setup() {
-        const store = useTodoListStore();
+<script lang="ts" setup>
+import { useTodoListStore } from "@/stores/useTodoListStore";
 
-        const { todoList } = storeToRefs(store);
-        const { toggleCompleted, deleteTodo } = store;
 
-        return { todoList, toggleCompleted, deleteTodo };
-    },
-});
+
+const todoStore = useTodoListStore();
+
+
+
+
 </script>
   
 <style scoped>
