@@ -55,7 +55,7 @@ export default {
             </v-col>
             <v-col>
               <v-sheet class="pa-2 ma-2">
-                .v-col-auto
+                <!-- col 2 -->
                 <v-app>
                   <!-- ส่วนอื่นๆ ของเทมเพลต -->
                   <v-card>
