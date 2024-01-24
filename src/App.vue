@@ -1,24 +1,44 @@
-<script lang="ts">
-import { defineComponent } from 'vue'
-import vuetify from './plugins/vuetify'
-import TodoApp from './components/TodoApp.vue'
-
-export default {
-  name: "App",
-
-  components: {
-    TodoApp
-  },
+<script setup lang="ts">
+import { ref } from 'vue';
+import TodoApp from './components/TodoApp.vue';
+import draggable from 'vuedraggable';
+import { VCol, VContainer, VCard, VCardTitle, VRow } from 'vuetify/components';
 
 
-  data() {
-    return {
-      drawer: true,
-      rail: true,
-    }
-  },
+interface Item {
+  id: number;
+  text: string;
 }
 
+interface Column {
+  title: string;
+  items: Item[];
+}
+
+
+const drawer = ref(true);
+const rail = ref(true);
+const board = ref<Column[]>([
+  {
+    title: 'Idea 💡',
+    items: [{ id: 1, text: 'Migrate codebase to TypeScript' }],
+  },
+  {
+    title: 'Todo 📋',
+    items: [
+      { id: 2, text: 'Dockerize App' },
+      { id: 3, text: 'Add vue draggable to project' },
+    ],
+  },
+  {
+    title: 'In Progress 🚧',
+    items: [{ id: 4, text: 'Implement Web3 Features' }],
+  },
+  {
+    title: 'Ready to go 🚀',
+    items: [{ id: 5, text: 'Bump to vite js' }],
+  },
+]);
 </script>
 
 <template>
@@ -60,7 +80,7 @@ export default {
                   <!-- ส่วนอื่นๆ ของเทมเพลต -->
                   <v-card>
                     <!-- เพิ่ม TodoApp.vue ที่นี่ -->
-                    <todo-app></todo-app>
+                    <TodoApp />
                   </v-card>
                   <!-- ส่วนอื่นๆ ของเทมเพลต -->
                 </v-app>
@@ -69,11 +89,22 @@ export default {
           </v-row>
 
           <v-row no-gutters>
-            <v-col>
-              <v-sheet class="pa-2 ma-2">
-                .v-col-auto
-              </v-sheet>
-            </v-col>
+            <v-container>
+              <v-row>
+                <v-col cols="12" md="3" v-for="(column, index) in board" :key="index">
+                  <v-card class="pa-2" outlined>
+                    <v-card-title v-text="column.title" />
+                    <draggable v-model="column.items" group="items" class="drag-area" item-key="id">
+                      <template #item="{ element }">
+                        <div :key="element.id" class="pa-2">
+                          {{ element.text }}
+                        </div>
+                      </template>
+                    </draggable>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-container>
             <v-col>
               <v-sheet class="pa-2 ma-2">
                 .v-col-auto
