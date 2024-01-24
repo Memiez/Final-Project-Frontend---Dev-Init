@@ -61,7 +61,7 @@ const board = ref<Column[]>([
       </v-navigation-drawer>
       <v-app-bar title="Application bar"></v-app-bar>
       <v-main class="d-flex align-center justify-center" style="min-height: 300px;">
-        <v-container class="bg-light-blue">
+        <v-container class="main-color">
           <v-row no-gutters>
             <v-col cols="auto">
               <v-sheet class="pa-2 ma-2">
@@ -136,4 +136,33 @@ const board = ref<Column[]>([
   </v-card>
 </template>
 
+
+<style scoped>
+.main-color {
+  min-height: 100px;
+  padding: 10px;
+  border: 1px solid transparent;
+  background-color: #F875AA;
+  transition: background-color 0.3s ease;
+}
+
+.drag-area {
+  min-height: 100px;
+  background-color: #ffffff;
+  transition: background-color 0.3s ease;
+}
+
+.drag-area>div {
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #AEDEFC;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.drag-area>div:hover {
+  border-color: #9e9e9e;
+}
+</style>
 
