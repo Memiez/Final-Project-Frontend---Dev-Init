@@ -96,7 +96,7 @@ const addIdea = () => {
 .drag-area>div {
   padding: 10px;
   margin-bottom: 10px;
-  background-color: #FFFFFF;
+  background-color: #AEDEFC;
   border: 1px solid transparent;
   cursor: pointer;
   transition: border-color 0.3s ease;
