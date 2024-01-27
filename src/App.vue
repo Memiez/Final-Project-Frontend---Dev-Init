@@ -140,6 +140,11 @@ const board = ref<Column[]>([
 
 
 <style scoped>
+.v-container {
+  padding-top: 20px;
+  background-color: #FFF6F6;
+}
+
 .main-color {
   min-height: 100px;
   padding: 10px;

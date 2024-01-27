@@ -51,7 +51,6 @@ const addIdea = () => {
   <v-app>
     <v-main>
       <v-container>
-        <!-- Form for adding a new idea -->
         <v-row>
           <v-col cols="12">
             <v-card class="text-center mx-auto" style="max-width: 500px;">
