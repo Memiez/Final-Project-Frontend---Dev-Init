@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import draggable from 'vuedraggable';
-import { VCol, VContainer, VCard, VCardTitle, VRow } from 'vuetify/components';
 
 interface Item {
   id: number;
@@ -54,13 +53,14 @@ const addIdea = () => {
       <v-container>
         <!-- Form for adding a new idea -->
         <v-row>
-          <v-col cols="12" md="6">
-            <v-card>
+          <v-col cols="12">
+            <v-card class="text-center mx-auto" style="max-width: 500px;">
               <v-card-title>Add New Idea</v-card-title>
               <v-card-text>
                 <v-form @submit.prevent="addIdea">
-                  <v-text-field label="Idea" v-model="newIdea" required></v-text-field>
-                  <v-btn type="submit" color="primary">Add</v-btn>
+                  <v-text-field label="Idea" v-model="newIdea" required outlined class="mx-auto my-4"
+                    style="max-width: 400px;"></v-text-field>
+                  <v-btn type="submit" class="styled-button mx-auto">Add Idea</v-btn>
                 </v-form>
               </v-card-text>
             </v-card>
@@ -87,22 +87,97 @@ const addIdea = () => {
 
 
 <style scoped>
+.v-container {
+  padding-top: 20px;
+  background-color: #FFF6F6;
+}
+
+
+
+
+/* ตั้งค่าสำหรับการ์ด */
+.v-card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* ตั้งค่าหัวข้อการ์ด */
+.v-card-title {
+  background-color: #F875AA;
+  /* สีสันหลักของเว็บแอป */
+  color: white;
+  padding: 12px 24px;
+  font-size: 1.25rem;
+  border-radius: 6px;
+}
+
+/* ตั้งค่าขอบเขตลาก (Draggable Area) */
 .drag-area {
-  min-height: 100px;
-  background-color: #F5F5F5;
-  padding: 10px 0;
-}
-
-.drag-area>div {
   padding: 10px;
-  margin-bottom: 10px;
-  background-color: #AEDEFC;
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: border-color 0.3s ease;
+  min-height: 100px;
+  transition: background-color 0.3s ease;
+  background-color: white;
+  border-radius: 6px;
 }
 
+/* ตั้งค่าสไตล์สำหรับแต่ละไอเท็มในขอบเขตลาก */
+.drag-area>div {
+  background-color: #BBDEFB;
+  border: 1px solid #90CAF9;
+  margin-bottom: 8px;
+  padding: 10px;
+  border-radius: 4px;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+/* หากไอเท็มถูกโฮเวอร์, จะเปลี่ยนเป็นเงา */
 .drag-area>div:hover {
-  border-color: #9e9e9e;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.10);
+}
+
+.styled-button {
+  background-image: linear-gradient(to right, #FF85B3, #FF5788);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: none;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);
+}
+
+.styled-button::after {
+  content: '\2713';
+  margin-left: 10px;
+  font-size: 18px;
+}
+
+.styled-button:hover {
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.styled-button:active {
+  transform: translateY(1px);
+}
+
+.styled-button:hover::after {
+  transform: scale(1.2);
+}
+
+/* Custom style for the outlined text field */
+.v-text-field--outlined .v-input__control .v-input__slot {
+  border: 2px solid #E91E63;
+  /* Custom border color */
+}
+
+/* Custom styles for the v-text-field focused state */
+.v-text-field--outlined.v-input--is-focused .v-input__control .v-input__slot {
+  border-color: #C2185B;
+  /* Darker border color for focused state */
 }
 </style>

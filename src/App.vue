@@ -45,7 +45,9 @@ const board = ref<Column[]>([
   <v-card>
     <v-layout>
       <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false">
-        <v-list-item prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg" title="Lisa" nav>
+        <v-list-item
+          prepend-avatar="https://media.allure.com/photos/6127a91ac2052c31747415dd/1:1/w_2323,h_2323,c_limit/blackpink%20lisa%20gold%20background.jpg"
+          title="Lisa" nav>
           <template v-slot:append>
             <v-btn variant="text" icon="mdi-chevron-left" @click.stop="rail = !rail"></v-btn>
           </template>
