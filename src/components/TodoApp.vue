@@ -45,6 +45,21 @@ const addIdea = () => {
     newIdea.value = ''; // Reset the input field after adding the idea
   }
 };
+
+// Function to handle item deletion
+const deleteItem = (columnIndex: number, itemIndex: number) => {
+  board.value[columnIndex].items.splice(itemIndex, 1);
+};
+
+// Function to handle item edit
+const editItem = (columnIndex: number, itemIndex: number) => {
+  // You can set up a dialog here, or use inline editing
+  // For simplicity, this example just prompts for a new text
+  const newText = prompt('Edit the item text:', board.value[columnIndex].items[itemIndex].text);
+  if (newText) {
+    board.value[columnIndex].items[itemIndex].text = newText;
+  }
+};
 </script>
 
 <template>
@@ -72,8 +87,22 @@ const addIdea = () => {
             <v-card class="pa-2" outlined>
               <v-card-title>{{ column.title }}</v-card-title>
               <draggable class="drag-area" v-model="column.items" group="items">
-                <template #item="{ element }">
-                  <div :key="element.id" class="pa-2">{{ element.text }}</div>
+                <template #item="{ element, index }">
+                  <div :key="element.id" class="pa-2 d-flex justify-space-between align-center">
+                    {{ element.text }}
+                    <span>
+                      <!-- Edit Button -->
+                      <v-btn class="ma-2" variant="text" size="x-small" icon small @click="editItem(columnIndex, index)">
+                        <v-icon>mdi-pencil</v-icon>
+                      </v-btn>
+
+                      <!-- Delete Button -->
+                      <v-btn class="ma-2" variant="text" size="x-small" icon small
+                        @click="deleteItem(columnIndex, index)">
+                        <v-icon>mdi-delete</v-icon>
+                      </v-btn>
+                    </span>
+                  </div>
                 </template>
               </draggable>
             </v-card>
@@ -124,10 +153,23 @@ const addIdea = () => {
 .drag-area>div {
   background-color: #BBDEFB;
   border: 1px solid #90CAF9;
+  border-radius: 4px;
   margin-bottom: 8px;
   padding: 10px;
-  border-radius: 4px;
   transition: box-shadow 0.2s ease-in-out;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Styles for the buttons inside the draggable area */
+.drag-area .v-btn {
+  margin-left: 8px;
+}
+
+/* Styles for the icon buttons */
+.drag-area .v-icon {
+  color: #424242;
 }
 
 /* หากไอเท็มถูกโฮเวอร์, จะเปลี่ยนเป็นเงา */
