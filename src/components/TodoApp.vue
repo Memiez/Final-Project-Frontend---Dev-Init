@@ -31,7 +31,7 @@ const board = ref<Column[]>([
   },
   {
     title: 'Ready to go 🚀',
-    items: [{ id: 5, text: 'Bump to vite js' }],
+    items: [{ id: 5, text: 'Bump to vite js 555555555555555555555555555555555555555' }],
   },
 ]);
 
@@ -86,25 +86,25 @@ const editItem = (columnIndex: number, itemIndex: number) => {
           <v-col cols="12" md="3" v-for="(column, columnIndex) in board" :key="columnIndex">
             <v-card class="pa-2" outlined>
               <v-card-title>{{ column.title }}</v-card-title>
-              <draggable class="drag-area" v-model="column.items" group="items">
-                <template #item="{ element, index }">
-                  <div :key="element.id" class="pa-2 d-flex justify-space-between align-center">
-                    {{ element.text }}
-                    <span>
-                      <!-- Edit Button -->
-                      <v-btn class="ma-2" variant="text" size="x-small" icon small @click="editItem(columnIndex, index)">
-                        <v-icon>mdi-pencil</v-icon>
-                      </v-btn>
-
-                      <!-- Delete Button -->
-                      <v-btn class="ma-2" variant="text" size="x-small" icon small
-                        @click="deleteItem(columnIndex, index)">
-                        <v-icon>mdi-delete</v-icon>
-                      </v-btn>
-                    </span>
-                  </div>
-                </template>
-              </draggable>
+              <v-banner>
+                <draggable class="drag-area" v-model="column.items" group="items">
+                  <template #item="{ element, index }">
+                    <div :key="element.id" class="pa-2 d-flex justify-space-between align-center">
+                      {{ element.text }}
+                      <span>
+                        <!-- Edit Button -->
+                        <v-btn variant="text" size="x-small" icon small @click="editItem(columnIndex, index)">
+                          <v-icon>mdi-pencil</v-icon>
+                        </v-btn>
+                        <!-- Delete Button -->
+                        <v-btn variant="text" size="x-small" icon small @click="deleteItem(columnIndex, index)">
+                          <v-icon>mdi-delete</v-icon>
+                        </v-btn>
+                      </span>
+                    </div>
+                  </template>
+                </draggable>
+              </v-banner>
             </v-card>
           </v-col>
         </v-row>
@@ -157,6 +157,8 @@ const editItem = (columnIndex: number, itemIndex: number) => {
   margin-bottom: 8px;
   padding: 10px;
   transition: box-shadow 0.2s ease-in-out;
+  overflow-wrap: break-word;
+  word-break: break-word;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -164,7 +166,7 @@ const editItem = (columnIndex: number, itemIndex: number) => {
 
 /* Styles for the buttons inside the draggable area */
 .drag-area .v-btn {
-  margin-left: 8px;
+  margin-left: 4px;
 }
 
 /* Styles for the icon buttons */
