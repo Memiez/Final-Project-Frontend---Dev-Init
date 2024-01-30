@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import TodoApp from './components/TodoApp.vue';
+import Calendar from './components/Calendar.vue';
 import draggable from 'vuedraggable';
 import { VCol, VContainer, VCard, VCardTitle, VRow } from 'vuetify/components';
 

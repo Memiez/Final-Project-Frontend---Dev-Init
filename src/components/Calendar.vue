@@ -10,20 +10,20 @@ type CalendarEvent = {
 
 const selectedDate = ref(new Date().toISOString().substr(0, 10));
 const calendarEvents = ref<CalendarEvent[]>([
-    // กำหนดเหตุการณ์ของคุณที่นี่
+
     {
         name: 'เหตุการณ์ที่ 1',
         start: '2024-01-30',
         end: '2024-01-30',
         color: 'blue'
     },
-    // ... เพิ่มเหตุการณ์เพิ่มเติมตามต้องการ
+
 ]);
 
 const getEventColor = (event: CalendarEvent) => event.color;
 
 const onClickEvent = (event: CalendarEvent) => {
-    // จัดการการคลิกเหตุการณ์ที่นี่
+
     console.log(event.name);
 };
 </script>
@@ -35,6 +35,4 @@ const onClickEvent = (event: CalendarEvent) => {
     </v-container>
 </template>
 
-<style scoped>
-/* เพิ่มสไตล์ที่นี่ถ้าจำเป็น */
-</style>
+<style scoped></style>
