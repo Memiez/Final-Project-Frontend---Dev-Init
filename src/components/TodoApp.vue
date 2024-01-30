@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import draggable from 'vuedraggable';
+import { db, collection, addDoc, updateDoc, doc, deleteDoc } from '../firebase';
+
 
 interface Item {
-  id: number;
+  id: string;
   text: string;
 }
 
@@ -13,51 +15,50 @@ interface Column {
 }
 
 const newIdea = ref('');
-const board = ref<Column[]>([
-  {
-    title: 'Idea 💡',
-    items: [{ id: 1, text: 'Migrate codebase to TypeScript' }],
-  },
-  {
-    title: 'Todo 📋',
-    items: [
-      { id: 2, text: 'Dockerize App' },
-      { id: 3, text: 'Add vue draggable to project' },
-    ],
-  },
-  {
-    title: 'In Progress 🚧',
-    items: [{ id: 4, text: 'Implement Web3 Features' }],
-  },
-  {
-    title: 'Ready to go 🚀',
-    items: [{ id: 5, text: 'Bump to vite js 555555555555555555555555555555555555555' }],
-  },
-]);
+const board = ref<Column[]>([]);
 
-const addIdea = () => {
-  const ideaColumn = board.value.find(column => column.title === 'Idea 💡');
-  if (ideaColumn && newIdea.value.trim()) {
-    ideaColumn.items.push({
-      id: Date.now(), // This should be unique for each item
-      text: newIdea.value
-    });
-    newIdea.value = ''; // Reset the input field after adding the idea
+// ดึงข้อมูลจาก Firestore เมื่อแอปพลิเคชันเริ่มทำงาน
+onMounted(async () => {
+  // ใช้ฟังก์ชัน getDocs, query และ where จาก Firestore เพื่อดึงข้อมูล
+  // ...
+});
+
+// ฟังก์ชันเพิ่ม idea ใหม่
+const addIdea = async () => {
+  if (newIdea.value.trim()) {
+    try {
+      const docRef = await addDoc(collection(db, "ideas"), {
+        text: newIdea.value,
+      });
+      board.value.find(column => column.title === 'Idea 💡')?.items.push({
+        id: docRef.id.toString(),
+        text: newIdea.value
+      });
+      newIdea.value = '';
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
   }
 };
 
-// Function to handle item deletion
-const deleteItem = (columnIndex: number, itemIndex: number) => {
-  board.value[columnIndex].items.splice(itemIndex, 1);
+// ฟังก์ชันลบ idea
+const deleteItem = async (columnIndex: number, item: Item) => {
+  try {
+    await deleteDoc(doc(db, "ideas", item.id));
+    board.value[columnIndex].items = board.value[columnIndex].items.filter(i => i.id !== item.id);
+  } catch (e) {
+    console.error("Error deleting document: ", e);
+  }
 };
 
-// Function to handle item edit
-const editItem = (columnIndex: number, itemIndex: number) => {
-  // You can set up a dialog here, or use inline editing
-  // For simplicity, this example just prompts for a new text
-  const newText = prompt('Edit the item text:', board.value[columnIndex].items[itemIndex].text);
-  if (newText) {
-    board.value[columnIndex].items[itemIndex].text = newText;
+// ฟังก์ชันแก้ไข idea
+const editItem = async (columnIndex: number, item: Item, newText: string) => {
+  try {
+    const ideaRef = doc(db, "ideas", item.id);
+    await updateDoc(ideaRef, { text: newText });
+    item.text = newText; // อัปเดตใน local state
+  } catch (e) {
+    console.error("Error updating document: ", e);
   }
 };
 </script>
@@ -113,15 +114,11 @@ const editItem = (columnIndex: number, itemIndex: number) => {
   </v-app>
 </template>
 
-
 <style scoped>
 .v-container {
   padding-top: 20px;
   background-color: #FFF6F6;
 }
-
-
-
 
 /* ตั้งค่าสำหรับการ์ด */
 .v-card {
@@ -174,7 +171,6 @@ const editItem = (columnIndex: number, itemIndex: number) => {
   color: #424242;
 }
 
-/* หากไอเท็มถูกโฮเวอร์, จะเปลี่ยนเป็นเงา */
 .drag-area>div:hover {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.10);
 }
