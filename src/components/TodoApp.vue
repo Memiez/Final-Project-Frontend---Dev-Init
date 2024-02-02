@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import draggable from 'vuedraggable';
-import { db, collection, addDoc, updateDoc, doc, deleteDoc } from '../firebase';
+import { db, collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from '../firebase';
 
 
 interface Item {
@@ -19,8 +19,18 @@ const board = ref<Column[]>([]);
 
 // ดึงข้อมูลจาก Firestore เมื่อแอปพลิเคชันเริ่มทำงาน
 onMounted(async () => {
-  // ใช้ฟังก์ชัน getDocs, query และ where จาก Firestore เพื่อดึงข้อมูล
-  // ...
+  try {
+    const querySnapshot = await getDocs(collection(db, "ideas"));
+    let items: Item[] = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      text: doc.data().text as string // สมมติว่ามีฟิลด์ 'text' ในเอกสาร
+    }));
+
+    // สมมติว่าคุณต้องการเก็บข้อมูลนี้ใน column ที่มีชื่อ 'Idea 💡'
+    board.value = [{ title: 'Idea 💡', items: items }];
+  } catch (error) {
+    console.error("Error fetching documents: ", error);
+  }
 });
 
 // ฟังก์ชันเพิ่ม idea ใหม่
