@@ -15,21 +15,32 @@ interface Column {
 }
 
 const newIdea = ref('');
-const board = ref<Column[]>([]);
+const board = ref<Column[]>([
+  {
+    title: 'Idea 💡',
+    items: [],
+  },
+  {
+    title: 'Todo 📋',
+    items: [],
+  },
+  {
+    title: 'In Progress 🚧',
+    items: [],
+  },
+  {
+    title: 'Ready to go 🚀',
+    items: [],
+  },
+]);
 
-// ดึงข้อมูลจาก Firestore เมื่อแอปพลิเคชันเริ่มทำงาน
 onMounted(async () => {
-  try {
-    const querySnapshot = await getDocs(collection(db, "ideas"));
-    let items: Item[] = querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      text: doc.data().text as string // สมมติว่ามีฟิลด์ 'text' ในเอกสาร
-    }));
-
-    // สมมติว่าคุณต้องการเก็บข้อมูลนี้ใน column ที่มีชื่อ 'Idea 💡'
-    board.value = [{ title: 'Idea 💡', items: items }];
-  } catch (error) {
-    console.error("Error fetching documents: ", error);
+  // ใช้ getDocs จาก Firestore และรับคอลัมน์ Idea
+  const querySnapshot = await getDocs(collection(db, "ideas"));
+  const ideas = querySnapshot.docs.map(doc => ({ id: doc.id, text: doc.data().text }));
+  const ideaColumn = board.value.find(column => column.title === 'Idea 💡');
+  if (ideaColumn) {
+    ideaColumn.items = ideas;
   }
 });
 
@@ -40,10 +51,10 @@ const addIdea = async () => {
       const docRef = await addDoc(collection(db, "ideas"), {
         text: newIdea.value,
       });
-      board.value.find(column => column.title === 'Idea 💡')?.items.push({
-        id: docRef.id.toString(),
-        text: newIdea.value
-      });
+      const ideaColumn = board.value.find(column => column.title === 'Idea 💡');
+      if (ideaColumn) {
+        ideaColumn.items.push({ id: docRef.id, text: newIdea.value });
+      }
       newIdea.value = '';
     } catch (e) {
       console.error("Error adding document: ", e);
