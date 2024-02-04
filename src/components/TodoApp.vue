@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import draggable from 'vuedraggable';
-import { db, collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from '../firebase';
+import { db, collection, getDocs, addDoc, doc, updateDoc, deleteDoc } from '../firebase';
 
 
 interface Item {
@@ -34,14 +34,16 @@ const board = ref<Column[]>([
   },
 ]);
 
+// ดึงข้อมูลจาก Firestore และเตรียม board
 onMounted(async () => {
-  // ใช้ getDocs จาก Firestore และรับคอลัมน์ Idea
   const querySnapshot = await getDocs(collection(db, "ideas"));
-  const ideas = querySnapshot.docs.map(doc => ({ id: doc.id, text: doc.data().text }));
-  const ideaColumn = board.value.find(column => column.title === 'Idea 💡');
-  if (ideaColumn) {
-    ideaColumn.items = ideas;
-  }
+  querySnapshot.forEach((doc) => {
+    const data = doc.data() as Item;
+    const column = board.value.find(column => column.title === data.column);
+    if (column) {
+      column.items.push({ id: doc.id, ...data });
+    }
+  });
 });
 
 // ฟังก์ชันเพิ่ม idea ใหม่
@@ -50,6 +52,7 @@ const addIdea = async () => {
     try {
       const docRef = await addDoc(collection(db, "ideas"), {
         text: newIdea.value,
+        column: 'Idea 💡' // กำหนดค่าเริ่มต้นสำหรับ field column
       });
       const ideaColumn = board.value.find(column => column.title === 'Idea 💡');
       if (ideaColumn) {
@@ -61,6 +64,7 @@ const addIdea = async () => {
     }
   }
 };
+
 
 // ฟังก์ชันลบ idea
 const deleteItem = async (columnIndex: number, item: Item) => {
@@ -80,7 +84,30 @@ const editItem = async (columnIndex: number, item: Item, newText: string) => {
     item.text = newText; // อัปเดตใน local state
   } catch (e) {
     console.error("Error updating document: ", e);
-  }
+  };
+
+  const onDragEnd = async (event) => {
+    console.log(event);
+    // ดึงข้อมูลจาก event (ตรวจสอบว่าข้อมูลเหล่านี้ถูกส่งมาจาก draggable correctly)
+    const { movedElementId, fromColumnTitle, toColumnTitle } = event;
+
+    // อัปเดต Firestore
+    const itemRef = doc(db, "ideas", movedElementId);
+    await updateDoc(itemRef, {
+      column: toColumnTitle // อัปเดตค่าของ field column ใน Firestore
+    });
+
+    // อัปเดต state ใน Vue
+    // หา item ในคอลัมน์เริ่มต้นและนำออก
+    const fromColumn = board.value.find(column => column.title === fromColumnTitle);
+    const itemIndex = fromColumn.items.findIndex(item => item.id === movedElementId);
+    const [movedItem] = fromColumn.items.splice(itemIndex, 1);
+
+    // เพิ่ม item ในคอลัมน์ปลายทาง
+    const toColumn = board.value.find(column => column.title === toColumnTitle);
+    toColumn.items.push(movedItem);
+  };
+
 };
 </script>
 
@@ -109,7 +136,7 @@ const editItem = async (columnIndex: number, item: Item, newText: string) => {
             <v-card class="pa-2" outlined>
               <v-card-title>{{ column.title }}</v-card-title>
               <v-banner>
-                <draggable class="drag-area" v-model="column.items" group="items">
+                <draggable class="drag-area" v-model="column.items" group="items" @end="onDragEnd">
                   <template #item="{ element, index }">
                     <div :key="element.id" class="pa-2 d-flex justify-space-between align-center">
                       {{ element.text }}
