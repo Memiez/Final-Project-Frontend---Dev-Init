@@ -89,36 +89,39 @@ const editItem = async (columnIndex: number, itemIndex: number, newText: string)
   }
 };
 
-// Event handler for draggable end event
+// ฟังก์ชัน onDragEnd ที่แก้ไขเพื่อให้สามารถทำงานได้อย่างถูกต้อง
 const onDragEnd = async (event) => {
-  // Extract draggable-specific properties from event
-  const { added, removed, moved } = event;
+  // ตรวจสอบว่า event มี property ที่ต้องการหรือไม่
+  const { added, removed } = event;
   if (!added || !removed) return;
 
+  // ดึง item ที่ถูกลากและคอลัมน์เริ่มต้นและปลายทาง
   const movedItem = added.element;
-  const oldColumnTitle = removed.element.column;
-  const newColumnTitle = board.value[added.newIndex].title;
+  const oldColumn = board.value.find(column => column.items.some(item => item.id === movedItem.id));
+  const newColumn = board.value.find(column => column.title === board.value[added.newIndex].title);
 
-  // Update Firestore
-  try {
-    const itemRef = doc(db, "ideas", movedItem.id);
-    await updateDoc(itemRef, { column: newColumnTitle });
-  } catch (e) {
-    console.error("Error updating document: ", e);
+  // ตรวจสอบว่า column ที่ไอเท็มถูกวางเข้าไปนั้นมีอยู่จริงใน local state
+  if (!oldColumn || !newColumn) {
+    console.error('Cannot find source or destination column in the local state');
+    return;
   }
 
-  // Update local state
-  const oldColumn = board.value.find(column => column.title === oldColumnTitle);
-  const newColumn = board.value.find(column => column.title === newColumnTitle);
+  // อัปเดต Firestore
+  try {
+    const itemRef = doc(db, "ideas", movedItem.id);
+    await updateDoc(itemRef, { column: newColumn.title });
+  } catch (e) {
+    console.error("Error updating document in Firestore: ", e);
+  }
 
-  if (oldColumn && newColumn) {
-    const oldItemIndex = oldColumn.items.findIndex(item => item.id === movedItem.id);
-    // Remove item from old column
-    if (oldItemIndex > -1) {
-      oldColumn.items.splice(oldItemIndex, 1);
-    }
-    // Add item to new column
-    newColumn.items.splice(added.newIndex, 0, movedItem);
+  // อัปเดต local state
+  const oldItemIndex = oldColumn.items.findIndex(item => item.id === movedItem.id);
+  const newItemIndex = added.newIndex;
+  if (oldItemIndex > -1) {
+    // ลบ item ออกจากคอลัมน์เดิม
+    oldColumn.items.splice(oldItemIndex, 1);
+    // เพิ่ม item ในคอลัมน์ใหม่
+    newColumn.items.splice(newItemIndex, 0, movedItem);
   }
 };
 </script>
