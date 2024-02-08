@@ -90,7 +90,7 @@ const editItem = async (columnIndex: number, itemIndex: number, newText: string)
 };
 
 // ฟังก์ชัน onDragEnd ที่แก้ไขเพื่อให้สามารถทำงานได้อย่างถูกต้อง
-const onDragEnd = async (event) => {
+const onDragEnd = async (event: { added: any; removed: any; }) => {
   // ตรวจสอบว่า event มี property ที่ต้องการหรือไม่
   const { added, removed } = event;
   if (!added || !removed) return;
@@ -118,9 +118,7 @@ const onDragEnd = async (event) => {
   const oldItemIndex = oldColumn.items.findIndex(item => item.id === movedItem.id);
   const newItemIndex = added.newIndex;
   if (oldItemIndex > -1) {
-    // ลบ item ออกจากคอลัมน์เดิม
     oldColumn.items.splice(oldItemIndex, 1);
-    // เพิ่ม item ในคอลัมน์ใหม่
     newColumn.items.splice(newItemIndex, 0, movedItem);
   }
 };
