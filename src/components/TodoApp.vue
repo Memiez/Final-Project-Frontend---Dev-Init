@@ -89,6 +89,15 @@ const editItem = async (columnIndex: number, itemIndex: number, newText: string)
   }
 };
 
+// ตัวอย่างฟังก์ชันเพื่อแสดง dialog และรับ input สำหรับการแก้ไข
+const promptEdit = (columnIndex, itemIndex) => {
+  const currentText = board.value[columnIndex].items[itemIndex].text;
+  const newText = window.prompt("Edit the text", currentText);
+  if (newText !== null && newText.trim() !== "") {
+    editItem(columnIndex, itemIndex, newText);
+  }
+};
+
 const onDragEnd = async (event: any) => {
   const { to, newIndex } = event
   const col = to.getAttribute('data-id')
@@ -137,9 +146,10 @@ const onDragEnd = async (event: any) => {
                       {{ element.text }}
                       <span>
                         <!-- Edit Button -->
-                        <v-btn variant="text" size="x-small" icon small @click="editItem(columnIndex, index)">
+                        <v-btn variant="text" size="x-small" icon small @click="promptEdit(columnIndex, index)">
                           <v-icon>mdi-pencil</v-icon>
                         </v-btn>
+
                         <!-- Delete Button -->
                         <v-btn variant="text" size="x-small" icon small @click="deleteItem(columnIndex, index)">
                           <v-icon>mdi-delete</v-icon>
