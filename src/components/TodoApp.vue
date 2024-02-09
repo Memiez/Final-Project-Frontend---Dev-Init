@@ -89,37 +89,18 @@ const editItem = async (columnIndex: number, itemIndex: number, newText: string)
   }
 };
 
-// ฟังก์ชัน onDragEnd ที่แก้ไขเพื่อให้สามารถทำงานได้อย่างถูกต้อง
-const onDragEnd = async (event: { added: any; removed: any; }) => {
-  // ตรวจสอบว่า event มี property ที่ต้องการหรือไม่
-  const { added, removed } = event;
-  if (!added || !removed) return;
+const onDragEnd = async (event: any) => {
+  const { to, newIndex } = event
+  const col = to.getAttribute('data-id')
+  const docId = board.value[col].items[newIndex].id
+  // console.log(to.getAttribute('data-id'))
 
-  // ดึง item ที่ถูกลากและคอลัมน์เริ่มต้นและปลายทาง
-  const movedItem = added.element;
-  const oldColumn = board.value.find(column => column.items.some(item => item.id === movedItem.id));
-  const newColumn = board.value.find(column => column.title === board.value[added.newIndex].title);
 
-  // ตรวจสอบว่า column ที่ไอเท็มถูกวางเข้าไปนั้นมีอยู่จริงใน local state
-  if (!oldColumn || !newColumn) {
-    console.error('Cannot find source or destination column in the local state');
-    return;
-  }
-
-  // อัปเดต Firestore
   try {
-    const itemRef = doc(db, "ideas", movedItem.id);
-    await updateDoc(itemRef, { column: newColumn.title });
+    const itemRef = doc(db, "ideas", docId);
+    await updateDoc(itemRef, { column: board.value[col].title });
   } catch (e) {
     console.error("Error updating document in Firestore: ", e);
-  }
-
-  // อัปเดต local state
-  const oldItemIndex = oldColumn.items.findIndex(item => item.id === movedItem.id);
-  const newItemIndex = added.newIndex;
-  if (oldItemIndex > -1) {
-    oldColumn.items.splice(oldItemIndex, 1);
-    newColumn.items.splice(newItemIndex, 0, movedItem);
   }
 };
 </script>
@@ -149,9 +130,10 @@ const onDragEnd = async (event: { added: any; removed: any; }) => {
             <v-card class="pa-2" outlined>
               <v-card-title>{{ column.title }}</v-card-title>
               <v-banner>
-                <draggable class="drag-area" v-model="column.items" group="items" item-key="id" @end="onDragEnd">
+                <draggable class="drag-area" v-model="column.items" group="items" item-key="id" :data-id="columnIndex"
+                  @end="onDragEnd">
                   <template #item="{ element, index }">
-                    <div :key="element.id" class="pa-2 d-flex justify-space-between align-center">
+                    <div :key="element.id" class="pa-2 d-flex justify-space-between align-center" :data-id="element.id">
                       {{ element.text }}
                       <span>
                         <!-- Edit Button -->
