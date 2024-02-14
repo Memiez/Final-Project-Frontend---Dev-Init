@@ -34,6 +34,11 @@ const board = ref<Column[]>([
   },
 ]);
 
+const dialog = ref(false);
+const editText = ref('');
+let editingColumnIndex = null;
+let editingItemIndex = null;
+
 // ดึงข้อมูลจาก Firestore และเตรียม board
 onMounted(async () => {
   const querySnapshot = await getDocs(collection(db, "ideas"));
@@ -89,13 +94,18 @@ const editItem = async (columnIndex: number, itemIndex: number, newText: string)
   }
 };
 
-// ตัวอย่างฟังก์ชันเพื่อแสดง dialog และรับ input สำหรับการแก้ไข
-const promptEdit = (columnIndex, itemIndex) => {
-  const currentText = board.value[columnIndex].items[itemIndex].text;
-  const newText = window.prompt("Edit the text", currentText);
-  if (newText !== null && newText.trim() !== "") {
-    editItem(columnIndex, itemIndex, newText);
+const confirmEdit = async () => {
+  if (editingColumnIndex !== null && editingItemIndex !== null) {
+    await editItem(editingColumnIndex, editingItemIndex, editText.value);
   }
+  dialog.value = false;
+};
+
+const promptEdit = (columnIndex, itemIndex) => {
+  editText.value = board.value[columnIndex].items[itemIndex].text;
+  editingColumnIndex = columnIndex;
+  editingItemIndex = itemIndex;
+  dialog.value = true;
 };
 
 const onDragEnd = async (event: any) => {
@@ -150,10 +160,26 @@ const onDragEnd = async (event: any) => {
                           <v-icon>mdi-pencil</v-icon>
                         </v-btn>
 
+
                         <!-- Delete Button -->
                         <v-btn variant="text" size="x-small" icon small @click="deleteItem(columnIndex, index)">
                           <v-icon>mdi-delete</v-icon>
                         </v-btn>
+
+                        <!-- Dialog Edit -->
+                        <v-dialog v-model="dialog" persistent max-width="600px">
+                          <v-card>
+                            <v-card-title>Edit and Save</v-card-title>
+                            <v-card-text>
+                              <v-textarea v-model="editText" label="Your idea" rows="3" auto-grow></v-textarea>
+                            </v-card-text>
+                            <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn color="blue darken-1" text @click="dialog = false">Cancel</v-btn>
+                              <v-btn color="blue darken-1" text @click="confirmEdit">Save</v-btn>
+                            </v-card-actions>
+                          </v-card>
+                        </v-dialog>
                       </span>
                     </div>
                   </template>
